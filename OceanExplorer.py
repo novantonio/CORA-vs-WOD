@@ -524,11 +524,90 @@ center_lat = st.session_state.get("sel_lat", DEFAULT_LAT)
 center_lon = st.session_state.get("sel_lon", DEFAULT_LON)
 
 m = folium.Map(location=[center_lat, center_lon], zoom_start=5,
-               tiles="CartoDB positron")
+               tiles=None)           # no default tile — we add ours below
 
+# ── Base layers ───────────────────────────────────────────────────────────────
+
+# 1. CartoDB Positron (light, clean)
 folium.TileLayer(
-    tiles="https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}",
-    attr="Esri", name="Esri Ocean", overlay=False, control=True,
+    tiles="CartoDB positron",
+    name="CartoDB Positron",
+    overlay=False,
+    control=True,
+    show=True,
+).add_to(m)
+
+# 2. EMODnet Bathymetry WMTS — mean depth, multi-colour style (Web Mercator)
+#    Tile URL pattern for WMTS in slippy-map convention
+folium.TileLayer(
+    tiles=(
+        "https://tiles.emodnet-bathymetry.eu/wmts/1.0.0/"
+        "mean_multicolour/default/web_mercator/{z}/{y}/{x}.png"
+    ),
+    attr=(
+        '&copy; <a href="https://www.emodnet-bathymetry.eu/" target="_blank">'
+        "EMODnet Bathymetry</a>"
+    ),
+    name="EMODnet Bathymetry (mean depth)",
+    overlay=False,
+    control=True,
+    show=False,
+    opacity=0.85,
+).add_to(m)
+
+# 3. EMODnet Bathymetry WMTS — rainbow colour ramp
+folium.TileLayer(
+    tiles=(
+        "https://tiles.emodnet-bathymetry.eu/wmts/1.0.0/"
+        "mean_rainbowcolour/default/web_mercator/{z}/{y}/{x}.png"
+    ),
+    attr=(
+        '&copy; <a href="https://www.emodnet-bathymetry.eu/" target="_blank">'
+        "EMODnet Bathymetry</a>"
+    ),
+    name="EMODnet Bathymetry (rainbow)",
+    overlay=False,
+    control=True,
+    show=False,
+    opacity=0.85,
+).add_to(m)
+
+# ── Overlay layers ────────────────────────────────────────────────────────────
+
+# 4. EMODnet Bathymetry WMS — bathymetric contours (isobaths)
+folium.WmsTileLayer(
+    url="https://ows.emodnet-bathymetry.eu/wms",
+    layers="emodnet:contours",
+    fmt="image/png",
+    transparent=True,
+    version="1.3.0",
+    attr=(
+        '&copy; <a href="https://www.emodnet-bathymetry.eu/" target="_blank">'
+        "EMODnet Bathymetry contours</a>"
+    ),
+    name="Bathymetric contours (EMODnet)",
+    overlay=True,
+    control=True,
+    show=True,
+    opacity=0.7,
+).add_to(m)
+
+# 5. EMODnet Bathymetry WMS — mean depth DTM (semi-transparent overlay)
+folium.WmsTileLayer(
+    url="https://ows.emodnet-bathymetry.eu/wms",
+    layers="emodnet:mean_multicolour",
+    fmt="image/png",
+    transparent=True,
+    version="1.3.0",
+    attr=(
+        '&copy; <a href="https://www.emodnet-bathymetry.eu/" target="_blank">'
+        "EMODnet Bathymetry DTM</a>"
+    ),
+    name="Mean depth DTM (EMODnet WMS)",
+    overlay=True,
+    control=True,
+    show=False,
+    opacity=0.6,
 ).add_to(m)
 
 folium.Marker(
