@@ -537,7 +537,16 @@ folium.TileLayer(
     show=True,
 ).add_to(m)
 
-# 2. EMODnet Bathymetry WMTS — mean depth, multi-colour style (Web Mercator)
+# 2. ESRI — mean depth, multi-colour style (Web Mercator)
+folium.TileLayer(
+    tiles="https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}",
+    attr="Esri",
+    name="Esri Ocean",
+    overlay=False,
+    control=True,
+).add_to(m)
+
+# 3. EMODnet Bathymetry WMTS — mean depth, multi-colour style (Web Mercator)
 #    Tile URL pattern for WMTS in slippy-map convention
 folium.TileLayer(
     tiles=(
@@ -555,7 +564,7 @@ folium.TileLayer(
     opacity=0.85,
 ).add_to(m)
 
-# 3. EMODnet Bathymetry WMTS — rainbow colour ramp
+# 4. EMODnet Bathymetry WMTS — rainbow colour ramp
 folium.TileLayer(
     tiles=(
         "https://tiles.emodnet-bathymetry.eu/wmts/1.0.0/"
@@ -574,7 +583,7 @@ folium.TileLayer(
 
 # ── Overlay layers ────────────────────────────────────────────────────────────
 
-# 4. EMODnet Bathymetry WMS — bathymetric contours (isobaths)
+# 5. EMODnet Bathymetry WMS — bathymetric contours (isobaths)
 folium.WmsTileLayer(
     url="https://ows.emodnet-bathymetry.eu/wms",
     layers="emodnet:contours",
@@ -592,7 +601,7 @@ folium.WmsTileLayer(
     opacity=0.7,
 ).add_to(m)
 
-# 5. EMODnet Bathymetry WMS — mean depth DTM (semi-transparent overlay)
+# 6. EMODnet Bathymetry WMS — mean depth DTM (semi-transparent overlay)
 folium.WmsTileLayer(
     url="https://ows.emodnet-bathymetry.eu/wms",
     layers="emodnet:mean_multicolour",
