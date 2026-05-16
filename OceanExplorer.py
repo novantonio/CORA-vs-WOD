@@ -1,7 +1,7 @@
 """
 ocean_explorer.py
 ─────────────────
-CS-MACH1 — Ocean Climate Explorer
+CS-MACH1 — Ocean Temperature Climate Explorer
 
 Layout
 ──────
@@ -44,7 +44,7 @@ warnings.filterwarnings("ignore", message="Unverified HTTPS request")
 # ── Page config & branding ────────────────────────────────────────────────────
 
 st.set_page_config(
-    page_title="CS-MACH1 Ocean Climate Explorer",
+    page_title="CS-MACH1 Ocean Temperature Climate Explorer",
     page_icon="🌊",
     layout="wide",
 )
