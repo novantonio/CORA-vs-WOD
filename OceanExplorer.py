@@ -113,17 +113,17 @@ def _wod_client():
 @st.cache_data(show_spinner="Querying World Ocean Database…", ttl=3600)
 def fetch_wod_all(latitude: float, longitude: float) -> pd.DataFrame | None:
     """
-    Fetch ALL WOD profiles within ±0.5° with no depth filter (0–10 000 m).
+    Fetch ALL WOD profiles within ±0.1° with no depth filter (0–10 000 m).
     Cached by lat/lon only so depth changes don't trigger a new API call.
 
     Returns raw DataFrame with columns: DEPTH, TEMPERATURE, TIME, LATITUDE, LONGITUDE.
     """
     try:
         client  = _wod_client()
-        lat_min = round(latitude,  1) - 0.5
-        lat_max = round(latitude,  1) + 0.5
-        lon_min = round(longitude, 1) - 0.5
-        lon_max = round(longitude, 1) + 0.5
+        lat_min = round(latitude,  1) - 0.1
+        lat_max = round(latitude,  1) + 0.1
+        lon_min = round(longitude, 1) - 0.1
+        lon_max = round(longitude, 1) + 0.1
 
         qb = client.query()
         qb.add_select_column("wod_unique_cast")
