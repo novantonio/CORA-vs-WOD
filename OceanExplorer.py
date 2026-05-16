@@ -62,7 +62,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<div class='main-title'>🌊 CS-MACH1 — Ocean Climate Explorer</div>",
+st.markdown("<div class='main-title'>🌊 CS-MACH1 — Ocean Temperature Climate Explorer</div>",
             unsafe_allow_html=True)
 st.markdown(
     "<div class='sub-title'>"
