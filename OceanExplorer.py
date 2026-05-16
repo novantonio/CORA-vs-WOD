@@ -504,7 +504,7 @@ with st.sidebar:
         "Data sources\n"
         "• **CORA**: EMODnet-Physics ERDDAP (1990–2023)\n"
         "• **WOD**: Beacon API / MARIS (1970–2023)\n"
-        "• WOD search box: ±0.5° around selected point\n\n"
+        "• WOD search box: ±0.1° around selected point\n\n"
         "**Depth slider** reactively updates\n"
         "the WOD scatter and CORA depth profile\n"
         "without re-running the full analysis."
@@ -626,10 +626,10 @@ folium.Marker(
 ).add_to(m)
 
 folium.Rectangle(
-    bounds=[[center_lat - 0.5, center_lon - 0.5],
-            [center_lat + 0.5, center_lon + 0.5]],
+    bounds=[[center_lat - 0.1, center_lon - 0.1],
+            [center_lat + 0.1, center_lon + 0.1]],
     color="#00A6D6", weight=1.5, fill=True, fill_opacity=0.08,
-    tooltip="WOD search box (±0.5°)",
+    tooltip="WOD search box (±0.1°)",
 ).add_to(m)
 
 folium.LayerControl().add_to(m)
