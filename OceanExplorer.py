@@ -1071,104 +1071,66 @@ if "results" in st.session_state:
     else:
         _blank(ax_ct, "CORA depth data not available")
 
-        # ── [1,1] WOD TIME × DEPTH Hovmöller ─────────────────────────────────────
+    # ── [1,1] WOD TIME × DEPTH  ─────────────────────────────────────
     if has_wod_dp:
 
         wod_plot = wod_raw[wod_raw["DEPTH"] <= max_depth].copy()
-
+    
         wod_plot["time"] = pd.to_datetime(
             wod_plot["TIME"],
             errors="coerce"
         )
-
+    
         wod_plot = wod_plot.dropna(
             subset=["time", "DEPTH", "TEMPERATURE"]
         )
-
-        # ── monthly bins ───────────────────────────────────────────────────
-        wod_plot["year_month"] = (
-            wod_plot["time"]
-            .dt.to_period("M")
-            .dt.to_timestamp()
-        )
-
-        # optional vertical binning
-        depth_bin = 10
-
-        wod_plot["DEPTH_BIN"] = (
-            np.round(wod_plot["DEPTH"] / depth_bin) * depth_bin
-        )
-
-        # ── monthly mean temperature at each depth bin ────────────────────
+    
+        # ── Monthly averages ──────────────────────────────────────────────
+        wod_plot["year_month"] = wod_plot["time"].dt.to_period("M").dt.to_timestamp()
+    
         wod_monthly = (
             wod_plot
-            .groupby(["year_month", "DEPTH_BIN"])["TEMPERATURE"]
+            .groupby(["year_month", "DEPTH"])["TEMPERATURE"]
             .mean()
             .reset_index()
         )
-
+    
         if not wod_monthly.empty:
-
-            # pivot table for 2D field
-            hov = wod_monthly.pivot(
-                index="DEPTH_BIN",
-                columns="year_month",
-                values="TEMPERATURE"
-            )
-
-            hov = hov.sort_index()
-
-            X = hov.columns
-            Y = hov.index
-            Z = hov.values
-
-            # ── filled contour plot ────────────────────────────────────────
-            cf = ax_wt.contourf(
-                X,
-                Y,
-                Z,
-                levels=30,
+    
+            t_min_w = wod_monthly["TEMPERATURE"].min()
+            t_max_w = wod_monthly["TEMPERATURE"].max()
+    
+            sc_wt = ax_wt.scatter(
+                wod_monthly["year_month"],
+                wod_monthly["DEPTH"],
+                c=wod_monthly["TEMPERATURE"],
                 cmap="rainbow",
-                extend="both"
+                s=10,
+                alpha=0.7,
+                vmin=t_min_w,
+                vmax=t_max_w,
             )
-
-            cb = fig2.colorbar(cf, ax=ax_wt, pad=0.02)
-            cb.set_label("Temperature (°C)", fontsize=8)
-
-            # optional contour lines
-            cs = ax_wt.contour(
-                X,
-                Y,
-                Z,
-                levels=15,
-                colors="k",
-                linewidths=0.25,
-                alpha=0.35
-            )
-
+    
+            cb_wt = fig2.colorbar(sc_wt, ax=ax_wt, pad=0.02)
+            cb_wt.set_label("Temperature (°C)", fontsize=8)
+    
         else:
             _blank(ax_wt, "No WOD monthly data in depth range")
-
+    
         ax_wt.set_xlabel("Time")
         ax_wt.set_ylabel("Depth (m)")
-
         ax_wt.invert_yaxis()
         ax_wt.set_ylim(bottom=max_depth, top=0)
-
+    
         ax_wt.set_title(
-            f"WOD Monthly Mean Temperature — Hovmöller Diagram\n"
+            f"WOD Monthly Mean Temperature (TIME × DEPTH)\n"
             f"({rlat:.4f}°N, {rlon:.4f}°E) · 0 – {max_depth:.0f} m",
             fontsize=9
         )
-
-        ax_wt.tick_params(
-            axis="x",
-            rotation=25,
-            labelsize=7
-        )
-
-        ax_wt.grid(False)
-
+    
+        ax_wt.tick_params(axis="x", rotation=25, labelsize=7)
+        ax_wt.grid(True, alpha=0.2)
+    
     else:
         _blank(ax_wt, "WOD data not available")
 
