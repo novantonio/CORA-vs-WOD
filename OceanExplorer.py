@@ -940,14 +940,14 @@ if "results" in st.session_state:
     st.pyplot(fig)
     plt.close(fig)
 
-  # ═══════════════════════════════════════════════════════════════════════════
+    # ═══════════════════════════════════════════════════════════════════════════
     # Summary figure — 2 rows × 2 columns
     # [0,0] CORA monthly + WOD monthly overlaid (WOD dashed)
     # [0,1] CORA depth profile + WOD depth profile overlaid (WOD dashed)
     # [1,0] CORA scatter: x = TIME, y = DEPTH, colour = TEMP (rainbow)
     # [1,1] WOD  scatter: x = TIME, y = DEPTH, colour = TEMP (rainbow)
     # ═══════════════════════════════════════════════════════════════════════════
-st.divider()
+    st.divider()
     st.markdown(
         "<div class='section-hdr'>🔀 CORA vs WOD — Combined View</div>",
         unsafe_allow_html=True,
