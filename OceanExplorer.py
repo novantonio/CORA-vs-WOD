@@ -1012,6 +1012,7 @@ if "results" in st.session_state:
         ax_mon.grid(True, alpha=0.3)
  
     # ── [0,1] T–depth profiles — CORA (solid) + WOD mean (dashed) ────────────
+        # ── [0,1] T–depth — CORA (solid) + WOD (dashed) ──────────────────────────
     if has_cora_dp:
         prof_c = (cora_dp.groupby("depth")["TEMP"]
                   .agg(["mean", "std"]).reset_index().sort_values("depth"))
@@ -1046,21 +1047,22 @@ if "results" in st.session_state:
             f"({rlat:.4f}°N, {rlon:.4f}°E) · 0 – {max_depth:.0f} m", fontsize=9)
         ax_dep.legend(fontsize=7)
         ax_dep.grid(True, alpha=0.3)
- 
-    # ── [1,0] CORA TIME vs DEPTH scatter, colour = TEMP ───────────────────────
+
+    # ── [1,0] CORA TIME × DEPTH scatter, colour = TEMP (rainbow) ─────────────
     if has_cora_dp:
-        # Use the full CORA depth profile DataFrame (time × depth × TEMP)
         cora_plot = cora_dp.dropna(subset=["time", "depth", "TEMP"]).copy()
-        t_min_c = cora_plot["TEMP"].min()
-        t_max_c = cora_plot["TEMP"].max()
-        sc_ct = ax_ct.scatter(
-            cora_plot["time"], cora_plot["depth"],
-            c=cora_plot["TEMP"], cmap="rainbow",
-            s=3, alpha=0.5,
-            vmin=t_min_c, vmax=t_max_c,
-        )
-        cb_ct = fig2.colorbar(sc_ct, ax=ax_ct, pad=0.02)
-        cb_ct.set_label("Temperature (°C)", fontsize=8)
+        if not cora_plot.empty:
+            t_min_c = cora_plot["TEMP"].min()
+            t_max_c = cora_plot["TEMP"].max()
+            sc_ct   = ax_ct.scatter(
+                cora_plot["time"], cora_plot["depth"],
+                c=cora_plot["TEMP"], cmap="rainbow",
+                s=3, alpha=0.5, vmin=t_min_c, vmax=t_max_c,
+            )
+            cb_ct = fig2.colorbar(sc_ct, ax=ax_ct, pad=0.02)
+            cb_ct.set_label("Temperature (°C)", fontsize=8)
+        else:
+            _blank(ax_ct, "CORA depth data empty")
         ax_ct.set_xlabel("Time")
         ax_ct.set_ylabel("Depth (m)")
         ax_ct.invert_yaxis()
@@ -1072,23 +1074,22 @@ if "results" in st.session_state:
         ax_ct.grid(True, alpha=0.2)
     else:
         _blank(ax_ct, "CORA depth data not available")
- 
-    # ── [1,1] WOD TIME vs DEPTH scatter, colour = TEMP ────────────────────────
+
+    # ── [1,1] WOD TIME × DEPTH scatter, colour = TEMP (rainbow) ──────────────
     if has_wod_dp:
-        wod_plot = wod_raw[wod_raw["DEPTH"] <= max_depth].copy()
+        wod_plot        = wod_raw[wod_raw["DEPTH"] <= max_depth].copy()
         wod_plot["time"] = pd.to_datetime(wod_plot["TIME"], errors="coerce")
         wod_plot = wod_plot.dropna(subset=["time", "DEPTH", "TEMPERATURE"])
-        MAX_PTS_SC = 15_000
-        if len(wod_plot) > MAX_PTS_SC:
-            wod_plot = wod_plot.sample(MAX_PTS_SC, random_state=42)
+        MAX_SC   = 15_000
+        if len(wod_plot) > MAX_SC:
+            wod_plot = wod_plot.sample(MAX_SC, random_state=42)
         if not wod_plot.empty:
             t_min_w = wod_plot["TEMPERATURE"].min()
             t_max_w = wod_plot["TEMPERATURE"].max()
-            sc_wt = ax_wt.scatter(
+            sc_wt   = ax_wt.scatter(
                 wod_plot["time"], wod_plot["DEPTH"],
                 c=wod_plot["TEMPERATURE"], cmap="rainbow",
-                s=3, alpha=0.5,
-                vmin=t_min_w, vmax=t_max_w,
+                s=3, alpha=0.5, vmin=t_min_w, vmax=t_max_w,
             )
             cb_wt = fig2.colorbar(sc_wt, ax=ax_wt, pad=0.02)
             cb_wt.set_label("Temperature (°C)", fontsize=8)
@@ -1105,7 +1106,7 @@ if "results" in st.session_state:
         ax_wt.grid(True, alpha=0.2)
     else:
         _blank(ax_wt, "WOD data not available")
- 
+
     st.pyplot(fig2)
     plt.close(fig2)
 
