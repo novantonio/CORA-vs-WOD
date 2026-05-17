@@ -1012,79 +1012,40 @@ if "results" in st.session_state:
         ax_mon.grid(True, alpha=0.3)
  
     # ── [0,1] T–depth profiles — CORA (solid) + WOD mean (dashed) ────────────
-    has_wod_depth  = wod_raw is not None and not wod_raw.empty
-    has_cora_depth = cora_dp is not None and not cora_dp.empty and "depth" in cora_dp.columns
- 
-    if not has_wod_depth and not has_cora_depth:
-        _blank(ax_ws, "No depth profile data available")
+    if has_cora_dp:
+        prof_c = (cora_dp.groupby("depth")["TEMP"]
+                  .agg(["mean", "std"]).reset_index().sort_values("depth"))
+        ax_dep.fill_betweenx(prof_c["depth"],
+                             prof_c["mean"] - prof_c["std"],
+                             prof_c["mean"] + prof_c["std"],
+                             alpha=0.15, color="steelblue", label="CORA ± std")
+        ax_dep.plot(prof_c["mean"], prof_c["depth"],
+                    "-", color="steelblue", lw=2.5, label="CORA mean")
+
+    if has_wod_dp:
+        wclip = wod_raw[wod_raw["DEPTH"] <= max_depth].copy()
+        if not wclip.empty:
+            prof_w = (wclip.groupby("DEPTH")["TEMPERATURE"]
+                      .agg(["mean", "std"]).reset_index().sort_values("DEPTH"))
+            ax_dep.fill_betweenx(prof_w["DEPTH"],
+                                 prof_w["mean"] - prof_w["std"],
+                                 prof_w["mean"] + prof_w["std"],
+                                 alpha=0.12, color="seagreen", label="WOD ± std")
+            ax_dep.plot(prof_w["mean"], prof_w["DEPTH"],
+                        "--", color="seagreen", lw=2, label="WOD mean")
+
+    if not has_cora_dp and not has_wod_dp:
+        _blank(ax_dep, "No depth profile data available")
     else:
-        # WOD scatter (blues, left x-axis)
-        if has_wod_depth:
-            raw_clip = wod_raw[wod_raw["DEPTH"] <= max_depth].copy()
-            MAX_PTS  = 8_000
-            plot_df  = (raw_clip.sample(min(MAX_PTS, len(raw_clip)), random_state=42)
-                        if len(raw_clip) > 0 else raw_clip)
-            if not plot_df.empty:
-                sc = ax_ws.scatter(
-                    plot_df["TEMPERATURE"], plot_df["DEPTH"],
-                    c=plot_df["DEPTH"], cmap="Blues_r",
-                    s=4, alpha=0.35, vmin=0, vmax=max_depth,
-                    label=f"WOD obs (n={len(raw_clip):,})",
-                    zorder=2,
-                )
-                fig.colorbar(sc, ax=ax_ws, label="Depth (m)", pad=0.13,
-                             fraction=0.03, shrink=0.8)
- 
-        # CORA mean ± std profile (steelblue lines, same x-axis)
-        if has_cora_depth:
-            profile = (
-                cora_dp.groupby("depth")["TEMP"]
-                .agg(["mean", "std", "median"])
-                .reset_index()
-                .sort_values("depth")
-            )
-            ax_ws.fill_betweenx(
-                profile["depth"],
-                profile["mean"] - profile["std"],
-                profile["mean"] + profile["std"],
-                alpha=0.22, color="steelblue", zorder=3, label="CORA ± std")
-            ax_ws.plot(profile["mean"] - profile["std"], profile["depth"],
-                       "--", color="royalblue", lw=1.1, alpha=0.7, zorder=4)
-            ax_ws.plot(profile["mean"] + profile["std"], profile["depth"],
-                       "--", color="tomato",    lw=1.1, alpha=0.7, zorder=4)
-            ax_ws.plot(profile["mean"],   profile["depth"],
-                       "-",  color="steelblue", lw=2.5, zorder=5,
-                       label="CORA mean")
-            ax_ws.plot(profile["median"], profile["depth"],
-                       ":",  color="darkorange", lw=1.8, zorder=5,
-                       label="CORA median")
- 
-        ax_ws.set_xlabel("Temperature (°C)")
-        ax_ws.set_ylabel("Depth (m)")
-        ax_ws.invert_yaxis()
-        ax_ws.set_ylim(bottom=max_depth, top=0)
-        n_wod = len(raw_clip) if has_wod_depth else 0
-        ax_ws.set_title(
-            f"T–Depth — WOD scatter + CORA profile\n"
-            f"({rlat:.4f}°N, {rlon:.4f}°E) · 0 – {max_depth:.0f} m"
-            + (f" · WOD n={n_wod:,}" if has_wod_depth else ""),
-            fontsize=9,
-        )
-        ax_ws.legend(fontsize=7, loc="lower right")
-        ax_ws.grid(True, alpha=0.3)
- 
-      # Row labels on the left edge
-      for ax, label in [
-          (ax_cm, "CORA surface"),
-          (ax_wm, "WOD surface\n(depth ≤ 10 m)"),
-          (ax_ws, f"Depth profiles\n(0 – {max_depth} m)"),
-      ]:
-          ax.annotate(
-              label,
-              xy=(-0.06, 0.5), xycoords="axes fraction",
-              fontsize=8, fontweight="bold", color="#00A6D6",
-              ha="center", va="center", rotation=90,
-          )
+        ax_dep.set_xlabel("Temperature (°C)")
+        ax_dep.set_ylabel("Depth (m)")
+        ax_dep.invert_yaxis()
+        ax_dep.set_ylim(bottom=max_depth, top=0)
+        ax_dep.set_title(
+            f"T–Depth Profile — CORA (solid) vs WOD (dashed)\n"
+            f"({rlat:.4f}°N, {rlon:.4f}°E) · 0 – {max_depth:.0f} m", fontsize=9)
+        ax_dep.legend(fontsize=7)
+        ax_dep.grid(True, alpha=0.3)
  
     # ── [1,0] CORA TIME vs DEPTH scatter, colour = TEMP ───────────────────────
     if has_cora_dp:
