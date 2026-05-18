@@ -1431,6 +1431,7 @@ if "results" in st.session_state:
         table1.scale(1, 1.5)
   
    #     pdf.savefig(fig_tbl1, bbox_inches="tight")
+        st.pyplot(fig_tbl1)
         plt.close(fig_tbl1)
   
     # ===============================================================
@@ -1492,6 +1493,7 @@ if "results" in st.session_state:
         table2.scale(1, 1.5)
   
     #    pdf.savefig(fig_tbl2, bbox_inches="tight")
+        st.pyplot(fig_tbl2)
         plt.close(fig_tbl2)
   
     # ===============================================================
@@ -1536,6 +1538,7 @@ if "results" in st.session_state:
         table3.scale(1, 1.2)
   
     #    pdf.savefig(fig_tbl3, bbox_inches="tight")
+        st.pyplot(fig_tbl3)
         plt.close(fig_tbl3)
   
     # ── Footer ────────────────────────────────────────────────────────────────
