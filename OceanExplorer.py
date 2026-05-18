@@ -1381,14 +1381,14 @@ if "results" in st.session_state:
   # CORA monthly climatology
   # ===============================================================
      if cora_surf is not None and not cora_surf.empty:
-     cora_tab = cora_surf.copy()
-     cora_tab["month"] = cora_tab["time"].dt.month
-     cora_clim = (
-          cora_tab
-          .groupby("month")["TEMP"]
-          .agg(["mean", "std", "min", "max"])
-          .round(2)
-          )
+         cora_tab = cora_surf.copy()
+         cora_tab["month"] = cora_tab["time"].dt.month
+         cora_clim = (
+              cora_tab
+              .groupby("month")["TEMP"]
+              .agg(["mean", "std", "min", "max"])
+              .round(2)
+              )
 
           cora_clim.index = [
               "Jan", "Feb", "Mar", "Apr",
