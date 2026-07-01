@@ -3,24 +3,7 @@ ocean_explorer.py
 ─────────────────
 CS-MACH1 — Ocean Temperature Climate Explorer
 
-Layout
-──────
-┌─────────────────────┬─────────────────────┐
-│ CORA monthly        │ CORA DOY             │
-│ mean ± std          │ interannual scatter  │
-├─────────────────────┼─────────────────────┤
-│ WOD T–depth scatter │ CORA T–depth profile │
-│  (reactive to depth)│  (reactive to depth) │
-└─────────────────────┴─────────────────────┘
-
-Reactivity
-──────────
-• "Run Analysis" fetches surface CORA + WOD raw profiles (cached by lat/lon).
-• Changing the depth slider re-clips the cached WOD data and re-fetches the
-  CORA depth profile (cached by lat/lon/depth) — no full re-run needed.
-
-Dependencies:
-    streamlit folium streamlit-folium requests pandas matplotlib numpy beacon-api
+https://blue-cloud-2026-oceanexplorer-py.streamlit.app/
 """
 
 from __future__ import annotations
