@@ -74,7 +74,7 @@ st.markdown(
 
 # ── Constants ─────────────────────────────────────────────────────────────────
 
-CORA_SURFACE_URL = (
+CORA_SST_URL = (
     "https://erddap.emodnet-physics.eu/erddap/griddap/"
     "INSITU_GLO_PHY_TS_OA_MY_013_052_TEMP.csv"
     "?TEMP%5B(1990-01-01T00:00:00Z):1:(2023-06-15T00:00:00Z)%5D"
@@ -83,7 +83,7 @@ CORA_SURFACE_URL = (
     "%5B({lon}):1:({lon})%5D"
 )
 
-CORA_DEPTH_URL = (
+CORA_WCT_URL = (
     "https://erddap.emodnet-physics.eu/erddap/griddap/"
     "INSITU_GLO_PHY_TS_OA_MY_013_052_TEMP.csv"
     "?TEMP%5B(1990-01-01T00:00:00Z):1:(2023-06-15T00:00:00Z)%5D"
@@ -180,7 +180,7 @@ def fetch_wod_all(latitude: float, longitude: float) -> pd.DataFrame | None:
 
 @st.cache_data(show_spinner="Downloading CORA surface climatology…", ttl=86400)
 def fetch_cora_surface(latitude: float, longitude: float) -> pd.DataFrame | None:
-    url = CORA_SURFACE_URL.format(lat=round(latitude, 4), lon=round(longitude, 4))
+    url = CORA_SST_URL.format(lat=round(latitude, 4), lon=round(longitude, 4))
     try:
         r = requests.get(url, verify=False, timeout=60)
         r.raise_for_status()
@@ -201,7 +201,7 @@ def fetch_cora_surface(latitude: float, longitude: float) -> pd.DataFrame | None
 @st.cache_data(show_spinner="Downloading CORA depth profile…", ttl=86400)
 def fetch_cora_depth_profile(latitude: float, longitude: float,
                               max_depth: float) -> pd.DataFrame | None:
-    url = CORA_DEPTH_URL.format(
+    url = CORA_CWT_URL.format(
         lat=round(latitude, 4),
         lon=round(longitude, 4),
         depth=float(max_depth),
