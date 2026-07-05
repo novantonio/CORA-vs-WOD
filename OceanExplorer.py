@@ -1,7 +1,7 @@
 """
 ocean_explorer.py
 ─────────────────
-CS-MACH1 — Ocean Temperature Climate Explorer
+Ocean Temperature Explorer
 
 https://blue-cloud-2026-oceanexplorer-py.streamlit.app/
 """
@@ -27,7 +27,7 @@ warnings.filterwarnings("ignore", message="Unverified HTTPS request")
 # ── Page config & branding ────────────────────────────────────────────────────
 
 st.set_page_config(
-    page_title="CS-MACH1 Ocean Temperature Climate Explorer",
+    page_title="Ocean Temperature Explorer",
     page_icon="🌊",
     layout="wide",
 )
@@ -45,7 +45,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<div class='main-title'>🌊 CS-MACH1 — Ocean Temperature Climate Explorer</div>",
+st.markdown("<div class='main-title'>Ocean Temperature Climatology Explorer . 1970–2023 .</div>",
             unsafe_allow_html=True)
 st.markdown(
     "<div class='sub-title'>"
@@ -1039,8 +1039,8 @@ if "results" in st.session_state:
     st.divider()
     st.markdown(
         "<div style='text-align:center;color:grey;font-size:13px;'>"
-        "CS-MACH1 Project · Ocean Climate Explorer · "
-        "CORA (EMODnet-Physics ERDDAP) + WOD (Beacon API / MARIS) · 1970–2023"
+        ". Ocean Temperature Climatology Explorer · 1970–2023 ."
+        "COriolis Ocean Dataset for Reanalysis (CORA) from EMODnet Physics (ERDDAP) + World Ocean Data (WOD) from BeaconAPI (MARIS)"
         "</div>",
         unsafe_allow_html=True,
     )
