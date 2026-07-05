@@ -1,10 +1,10 @@
 """
-cs_mach1_theme.py
+my_theme.py
 -----------------
 branding & Streamlit page-setup helpers.
 Import this module at the top of any Streamlit app:
 
-    from my_theme import my_mach1_theme, cs_mach1_footer
+    from my_theme import my_theme, my_footer
 """
 
 import streamlit as st
