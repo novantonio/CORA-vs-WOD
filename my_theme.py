@@ -61,7 +61,7 @@ _CSS = f"""
 
 # ── Public helpers ────────────────────────────────────────────────────────────
 
-def apply_cs_mach1_theme(
+def apply_my_theme(
     page_title: str = "Ocean Temperature Climatology Discovery Tool",
     page_icon: str = "logo.png",
     main_title: str = "🌊 ",
@@ -110,7 +110,7 @@ def apply_cs_mach1_theme(
     )
 
 
-def cs_mach1_footer(text: str = " • Ocean Temperature Climatology Discovery Tool • ") -> None:
+def my_footer(text: str = " • Ocean Temperature Climatology Discovery Tool • ") -> None:
     
     st.markdown("---")
     st.markdown(
